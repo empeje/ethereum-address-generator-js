@@ -8,14 +8,17 @@ const keccak256 = require('js-sha3').keccak256;
 const EthereumTx = require('ethereumjs-tx')
 
 // Learn from here
-web3js = new Web3js(window.ethereum)
+web3js = new Web3js(web3.currentProvider)
 account1 = web3js.eth.accounts.create();
 account = web3js.eth.accounts.privateKeyToAccount(account1.privateKey);
 signedMessage = web3js.eth.accounts.sign("Hello World!", account.privateKey)
 address = web3js.eth.accounts.recover(signedMessage)
 tx = { nonce: '0x00', gasPrice: '0x09184e72a000', gasLimit: '0x40010', to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6', value: '0x10', data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057', chainId: 1 }
-signedTransaction = await web3js.eth.accounts.signTransaction(tx, account.privateKey)
-recoveredTransaction = web3js.eth.accounts.recover(signedTransaction)
+signedTransaction = web3js.eth.accounts.signTransaction(tx, account.privateKey).then((data) => {
+    recoveredTransaction = web3js.eth.accounts.recover(data)
+    console.log({recoveredTransaction})
+})
+
 // Add functions here
 
 // Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
